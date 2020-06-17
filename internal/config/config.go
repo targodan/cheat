@@ -6,8 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cheat/cheat/internal/hook"
-
 	cp "github.com/cheat/cheat/internal/cheatpath"
 
 	"github.com/mitchellh/go-homedir"
@@ -21,7 +19,7 @@ type Config struct {
 	Cheatpaths []cp.Cheatpath `yaml:"cheatpaths"`
 	Style      string         `yaml:"style"`
 	Formatter  string         `yaml:"formatter"`
-	Hooks      []*hook.Config `yaml:"hooks"`
+	Hooks      []*Hooks       `yaml:"hooks"`
 }
 
 // New returns a new Config struct

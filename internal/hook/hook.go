@@ -32,6 +32,15 @@ var TypeNames = map[Type]string{
 	OnSheetRemovePost: "OnSheetRemovePost",
 }
 
+func FindTypeFromName(name string) (Type, error) {
+	for t, n := range TypeNames {
+		if name == n {
+			return t, nil
+		}
+	}
+	return 0, errors.New("unknown type \"" + name + "\"")
+}
+
 type Hook struct {
 	Path string
 }

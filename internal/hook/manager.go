@@ -67,13 +67,18 @@ func (m *Manager) createHooksFromConfig() error {
 			return err
 		}
 
-		for _, t := range h.Types {
-			_, exists := m.hooks[t]
-			if !exists {
-				m.hooks[t] = make([]*Hook, 0)
+		for _, t := range h.Events {
+			tName, err := FindTypeFromName(t)
+			if err != nil {
+				return err
 			}
 
-			m.hooks[t] = append(m.hooks[t], hook)
+			_, exists := m.hooks[tName]
+			if !exists {
+				m.hooks[tName] = make([]*Hook, 0)
+			}
+
+			m.hooks[tName] = append(m.hooks[tName], hook)
 		}
 	}
 	return nil
@@ -144,12 +149,7 @@ func (m *Manager) buildHookEnv() map[string]string {
 
 	for i, h := range m.conf.Hooks {
 		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_PATH", i)] = h.Path
-
-		types := make([]string, len(h.Types))
-		for i, t := range h.Types {
-			types[i] = TypeNames[t]
-		}
-		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_TYPES", i)] = strings.Join(types, ",")
+		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_TYPES", i)] = strings.Join(h.Events, ",")
 	}
 
 	return env
