@@ -121,9 +121,9 @@ func (m *Manager) runHooksOfType(t Type, args ...string) error {
 func (m *Manager) runHooksOfTypeWithSheet(t Type, sheet *sheet.Sheet) error {
 	var rdonly string
 	if sheet.ReadOnly {
-		rdonly = "rdonly"
+		rdonly = "true"
 	} else {
-		rdonly = "rw"
+		rdonly = "false"
 	}
 
 	// Reasoning for these call parameters (and order)
