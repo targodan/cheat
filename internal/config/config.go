@@ -137,6 +137,7 @@ func ConfigToEnvironment(conf *Config) map[string]string {
 	}
 
 	for i, h := range conf.Hooks {
+		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_NAME", i)] = h.Name
 		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_PATH", i)] = h.Path
 		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_TYPES", i)] = strings.Join(h.Events, ",")
 	}

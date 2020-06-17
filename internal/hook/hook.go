@@ -72,6 +72,7 @@ func NameToEvent(name string) (Event, error) {
 //
 // The Hook -> Event association is stored inside the HookManager, not inside the Hook.
 type Hook struct {
+	Name string
 	Path string
 }
 
@@ -80,8 +81,9 @@ type Hook struct {
 // This function also checks if the given path exists and if
 // it is a file. It does *not* check if the file is executable
 // by the current user. This will be handled by the Exec call.
-func New(path string) (*Hook, error) {
+func New(name, path string) (*Hook, error) {
 	h := &Hook{
+		Name: name,
 		Path: path,
 	}
 
