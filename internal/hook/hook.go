@@ -115,5 +115,8 @@ func (h *Hook) Exec(args []string, env map[string]string) error {
 	}
 	cmd.Env = environ
 
-	return cmd.Run()
+	// Output instead of Run, because this collects stderr in the
+	// returned error, if there is an error
+	_, err := cmd.Output()
+	return err
 }

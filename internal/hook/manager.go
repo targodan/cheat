@@ -1,6 +1,9 @@
 package hook
 
 import (
+	"fmt"
+	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/cheat/cheat/internal/config"
@@ -111,6 +114,7 @@ func (m *Manager) runHooksOfType(t Event, args ...string) error {
 		// it's safer to stop after the first error.
 		err := h.Exec(args, env)
 		if err != nil {
+			m.handleExecError(t, h, err)
 			return err
 		}
 	}
@@ -140,4 +144,33 @@ func (m *Manager) runHooksOfTypeWithSheet(t Event, sheet *sheet.Sheet) error {
 
 func (m *Manager) buildHookEnv() map[string]string {
 	return config.ConfigToEnvironment(m.conf)
+}
+
+func (m *Manager) handleExecError(t Event, h *Hook, err error) {
+	if err == nil {
+		return
+	}
+
+	fatal := false
+
+	exitErr, ok := err.(*exec.ExitError)
+	if ok {
+		fmt.Fprintf(os.Stderr, "Hook \"%s\" exited with code: %d\n", h.Name, exitErr.ExitCode())
+		fmt.Fprintf(os.Stderr, "------ STDERR ------\n%s--------------------\n", string(exitErr.Stderr))
+		// Maybe make this dependant on a specific exit code of the hook.
+		// E.g. if the hook exists with 42, we consider this fatal and any
+		// other non-zero exit code continues execution.
+		fatal = true
+	} else {
+		fmt.Fprintf(os.Stderr, "Hook \"%s\" could not be executed: %v\n", h.Name, err)
+		// This happens e.g. if the file exists but is not executable by the current user.
+		// Not sure if this should be fatal or not.
+		// Ideally handle the case of a non-executable file in the creation (New), in which
+		// case this should always be treated as fatal.
+		fatal = true
+	}
+
+	if fatal {
+		os.Exit(2)
+	}
 }
