@@ -9,12 +9,13 @@ import (
 	"text/tabwriter"
 
 	"github.com/cheat/cheat/internal/config"
+	"github.com/cheat/cheat/internal/hook"
 	"github.com/cheat/cheat/internal/sheet"
 	"github.com/cheat/cheat/internal/sheets"
 )
 
 // cmdList lists all available cheatsheets.
-func cmdList(opts map[string]interface{}, conf config.Config) {
+func cmdList(opts map[string]interface{}, conf config.Config, hookMan *hook.Manager) {
 
 	// load the cheatsheets
 	cheatsheets, err := sheets.Load(conf.Cheatpaths)

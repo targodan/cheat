@@ -5,11 +5,13 @@ import (
 	"os"
 	"text/tabwriter"
 
+	"github.com/cheat/cheat/internal/hook"
+
 	"github.com/cheat/cheat/internal/config"
 )
 
 // cmdDirectories lists the configured cheatpaths.
-func cmdDirectories(opts map[string]interface{}, conf config.Config) {
+func cmdDirectories(opts map[string]interface{}, conf config.Config, hookMan *hook.Manager) {
 
 	// initialize a tabwriter to produce cleanly columnized output
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', 0)

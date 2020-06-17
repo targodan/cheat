@@ -7,13 +7,15 @@ import (
 	"path"
 	"strings"
 
+	"github.com/cheat/cheat/internal/hook"
+
 	"github.com/cheat/cheat/internal/cheatpath"
 	"github.com/cheat/cheat/internal/config"
 	"github.com/cheat/cheat/internal/sheets"
 )
 
 // cmdEdit opens a cheatsheet for editing (or creates it if it doesn't exist).
-func cmdEdit(opts map[string]interface{}, conf config.Config) {
+func cmdEdit(opts map[string]interface{}, conf config.Config, hookMan *hook.Manager) {
 
 	cheatsheet := opts["--edit"].(string)
 
@@ -99,6 +101,9 @@ func cmdEdit(opts map[string]interface{}, conf config.Config) {
 		}
 	}
 
+	// execute pre edit hook
+	hookMan.RunOnSheetEditPreHooks(sheet)
+
 	// split `conf.Editor` into parts to separate the editor's executable from
 	// any arguments it may have been passed. If this is not done, the nearby
 	// call to `exec.Command` will fail.
@@ -115,4 +120,7 @@ func cmdEdit(opts map[string]interface{}, conf config.Config) {
 		fmt.Fprintf(os.Stderr, "failed to edit cheatsheet: %v\n", err)
 		os.Exit(1)
 	}
+
+	// execute post edit hook
+	hookMan.RunOnSheetEditPostHooks(sheet)
 }

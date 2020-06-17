@@ -5,11 +5,12 @@ import (
 	"os"
 
 	"github.com/cheat/cheat/internal/config"
+	"github.com/cheat/cheat/internal/hook"
 	"github.com/cheat/cheat/internal/sheets"
 )
 
 // cmdTags lists all tags in use.
-func cmdTags(opts map[string]interface{}, conf config.Config) {
+func cmdTags(opts map[string]interface{}, conf config.Config, hookMan *hook.Manager) {
 
 	// load the cheatsheets
 	cheatsheets, err := sheets.Load(conf.Cheatpaths)

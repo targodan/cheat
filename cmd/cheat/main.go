@@ -173,7 +173,7 @@ func main() {
 	hookMan.RunOnStartHooks()
 
 	// determine which command to execute
-	var cmd func(map[string]interface{}, config.Config)
+	var cmd func(map[string]interface{}, config.Config, *hook.Manager)
 
 	switch {
 	case opts["--directories"].(bool):
@@ -203,7 +203,7 @@ func main() {
 	}
 
 	// execute the command
-	cmd(opts, conf)
+	cmd(opts, conf, hookMan)
 
 	// execute OnStopHook
 	hookMan.RunOnStopHooks()

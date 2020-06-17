@@ -6,11 +6,12 @@ import (
 	"strings"
 
 	"github.com/cheat/cheat/internal/config"
+	"github.com/cheat/cheat/internal/hook"
 	"github.com/cheat/cheat/internal/sheets"
 )
 
 // cmdRemove opens a cheatsheet for editing (or creates it if it doesn't exist).
-func cmdRemove(opts map[string]interface{}, conf config.Config) {
+func cmdRemove(opts map[string]interface{}, conf config.Config, hookMan *hook.Manager) {
 
 	cheatsheet := opts["--rm"].(string)
 
@@ -47,9 +48,15 @@ func cmdRemove(opts map[string]interface{}, conf config.Config) {
 		os.Exit(1)
 	}
 
+	// execute pre remove hook
+	hookMan.RunOnSheetRemovePreHooks(sheet)
+
 	// otherwise, attempt to delete the sheet
 	if err := os.Remove(sheet.Path); err != nil {
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("failed to delete sheet: %s, %v", sheet.Title, err))
 		os.Exit(1)
 	}
+
+	// execute post remove hook
+	hookMan.RunOnSheetRemovePostHooks(sheet)
 }

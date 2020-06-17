@@ -6,11 +6,12 @@ import (
 	"strings"
 
 	"github.com/cheat/cheat/internal/config"
+	"github.com/cheat/cheat/internal/hook"
 	"github.com/cheat/cheat/internal/sheets"
 )
 
 // cmdView displays a cheatsheet for viewing.
-func cmdView(opts map[string]interface{}, conf config.Config) {
+func cmdView(opts map[string]interface{}, conf config.Config, hookMan *hook.Manager) {
 
 	cheatsheet := opts["<cheatsheet>"].(string)
 
@@ -46,6 +47,12 @@ func cmdView(opts map[string]interface{}, conf config.Config) {
 		sheet.Colorize(conf)
 	}
 
+	// run pre view hook
+	hookMan.RunOnSheetViewPreHooks(sheet)
+
 	// display the cheatsheet
 	fmt.Print(sheet.Text)
+
+	// run post view hook
+	hookMan.RunOnSheetViewPostHooks(sheet)
 }
