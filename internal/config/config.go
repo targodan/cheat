@@ -19,7 +19,7 @@ type Config struct {
 	Cheatpaths []cp.Cheatpath `yaml:"cheatpaths"`
 	Style      string         `yaml:"style"`
 	Formatter  string         `yaml:"formatter"`
-	Hooks      []*Hooks       `yaml:"hooks"`
+	Hooks      []*Hook        `yaml:"hooks"`
 }
 
 // New returns a new Config struct
