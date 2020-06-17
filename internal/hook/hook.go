@@ -6,14 +6,14 @@ import (
 	"os/exec"
 )
 
-// Type specifies the hook type, i.e. the event upon which the
+// Event specifies the event type, i.e. the event upon which the
 // hook will be executed.
-type Type int
+type Event int
 
 const (
 	// OnStart hooks are executed right after the application is ready,
 	// i.e. right after it has parsed the config and initialized the hooks.
-	OnStart Type = iota
+	OnStart Event = iota
 	// OnStop hooks are executed right before the application exits successfully.
 	// This hook is not executed if the application terminates in a failure state.
 	OnStop
@@ -40,8 +40,8 @@ const (
 	OnSheetRemovePost
 )
 
-// TypeNames maps types to their names.
-var TypeNames = map[Type]string{
+// eventNames maps types to their names.
+var eventNames = map[Event]string{
 	OnStart: "OnStart",
 	OnStop:  "OnStop",
 
@@ -53,20 +53,24 @@ var TypeNames = map[Type]string{
 	OnSheetRemovePost: "OnSheetRemovePost",
 }
 
-// FindTypeFromName looks up the name of a type and returns the
-// related type. If the name is not found an error is returned.
-func FindTypeFromName(name string) (Type, error) {
-	for t, n := range TypeNames {
+func EventToName(e Event) string {
+	return eventNames[e]
+}
+
+// NameToEvent looks up the name of an event and returns the
+// related event. If the name is not found an error is returned.
+func NameToEvent(name string) (Event, error) {
+	for t, n := range eventNames {
 		if name == n {
 			return t, nil
 		}
 	}
-	return 0, errors.New("unknown type \"" + name + "\"")
+	return 0, errors.New("unknown event \"" + name + "\"")
 }
 
 // Hook represents one hook.
 //
-// The Hook -> Type association is stored inside the HookManager, not inside the Hook.
+// The Hook -> Event association is stored inside the HookManager, not inside the Hook.
 type Hook struct {
 	Path string
 }

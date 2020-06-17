@@ -11,7 +11,7 @@ import (
 type Manager struct {
 	conf *config.Config
 
-	hooks map[Type][]*Hook
+	hooks map[Event][]*Hook
 }
 
 // NewManager create a new hook Manager.
@@ -23,7 +23,7 @@ func NewManager(conf config.Config) (*Manager, error) {
 	m := &Manager{
 		conf: &conf,
 
-		hooks: make(map[Type][]*Hook),
+		hooks: make(map[Event][]*Hook),
 	}
 
 	err := m.createHooksFromConfig()
@@ -82,7 +82,7 @@ func (m *Manager) createHooksFromConfig() error {
 		}
 
 		for _, t := range h.Events {
-			tName, err := FindTypeFromName(t)
+			tName, err := NameToEvent(t)
 			if err != nil {
 				return err
 			}
@@ -98,9 +98,9 @@ func (m *Manager) createHooksFromConfig() error {
 	return nil
 }
 
-func (m *Manager) runHooksOfType(t Type, args ...string) error {
+func (m *Manager) runHooksOfType(t Event, args ...string) error {
 	// prepend type
-	args = append([]string{TypeNames[t]}, args...)
+	args = append([]string{eventNames[t]}, args...)
 
 	// The hook environment contains the config values
 	env := m.buildHookEnv()
@@ -118,7 +118,7 @@ func (m *Manager) runHooksOfType(t Type, args ...string) error {
 	return nil
 }
 
-func (m *Manager) runHooksOfTypeWithSheet(t Type, sheet *sheet.Sheet) error {
+func (m *Manager) runHooksOfTypeWithSheet(t Event, sheet *sheet.Sheet) error {
 	var rdonly string
 	if sheet.ReadOnly {
 		rdonly = "true"
