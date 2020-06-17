@@ -8,12 +8,18 @@ import (
 	"github.com/cheat/cheat/internal/sheet"
 )
 
+// Manager manages hook creation and execution.
 type Manager struct {
 	conf *config.Config
 
 	hooks map[Type][]*Hook
 }
 
+// NewManager create a new hook Manager.
+//
+// During the creation of the manager, all hooks are created as well.
+// An error is returned if one of the hooks, defined by the given
+// config, either have an invalid path or invalid events.
 func NewManager(conf config.Config) (*Manager, error) {
 	m := &Manager{
 		conf: &conf,
@@ -29,33 +35,42 @@ func NewManager(conf config.Config) (*Manager, error) {
 	return m, nil
 }
 
+// RunOnStartHooks executes any registered OnStart hooks.
 func (m *Manager) RunOnStartHooks() error {
 	return m.runHooksOfType(OnStart)
 }
 
+// RunOnStopHooks executes any registered OnStart hooks.
 func (m *Manager) RunOnStopHooks() error {
 	return m.runHooksOfType(OnStop)
 }
 
+// RunOnSheetViewPreHooks executes any registered OnSheetViewPre hooks.
 func (m *Manager) RunOnSheetViewPreHooks(sheet sheet.Sheet) error {
 	return m.runHooksOfTypeWithSheet(OnSheetViewPre, &sheet)
 }
 
+// RunOnSheetViewPostHooks executes any registered OnSheetViewPost hooks.
 func (m *Manager) RunOnSheetViewPostHooks(sheet sheet.Sheet) error {
 	return m.runHooksOfTypeWithSheet(OnSheetViewPost, &sheet)
 }
 
+// RunOnSheetEditPreHooks executes any registered OnSheetEditPre hooks.
 func (m *Manager) RunOnSheetEditPreHooks(sheet sheet.Sheet) error {
 	return m.runHooksOfTypeWithSheet(OnSheetEditPre, &sheet)
 }
 
+// RunOnSheetEditPostHooks executes any registered OnSheetEditPost hooks.
 func (m *Manager) RunOnSheetEditPostHooks(sheet sheet.Sheet) error {
 	return m.runHooksOfTypeWithSheet(OnSheetEditPost, &sheet)
 }
 
+// RunOnSheetRemovePreHooks executes any registered OnSheetViewPre hooks.
 func (m *Manager) RunOnSheetRemovePreHooks(sheet sheet.Sheet) error {
 	return m.runHooksOfTypeWithSheet(OnSheetViewPre, &sheet)
 }
+
+// RunOnSheetRemovePostHooks executes any registered OnSheetViewPost hooks.
 func (m *Manager) RunOnSheetRemovePostHooks(sheet sheet.Sheet) error {
 	return m.runHooksOfTypeWithSheet(OnSheetViewPost, &sheet)
 }
