@@ -9,6 +9,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/cheat/cheat/internal/hook"
+
 	"github.com/docopt/docopt-go"
 	"github.com/mitchellh/go-homedir"
 
@@ -148,6 +150,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	// create hook manager
+	hookMan, err := hook.NewManager(conf)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "could not initialize hooks: %v\n", err)
+		os.Exit(1)
+	}
+
 	// filter the cheatpaths if --path was passed
 	if opts["--path"] != nil {
 		conf.Cheatpaths, err = cheatpath.Filter(
@@ -159,6 +168,9 @@ func main() {
 			os.Exit(1)
 		}
 	}
+
+	// execute OnStartHook
+	hookMan.RunOnStartHooks()
 
 	// determine which command to execute
 	var cmd func(map[string]interface{}, config.Config)
@@ -192,4 +204,7 @@ func main() {
 
 	// execute the command
 	cmd(opts, conf)
+
+	// execute OnStopHook
+	hookMan.RunOnStopHooks()
 }
