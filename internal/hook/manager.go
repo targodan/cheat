@@ -1,7 +1,6 @@
 package hook
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/cheat/cheat/internal/config"
@@ -140,32 +139,5 @@ func (m *Manager) runHooksOfTypeWithSheet(t Type, sheet *sheet.Sheet) error {
 }
 
 func (m *Manager) buildHookEnv() map[string]string {
-	// We might want to move this into the internal/config package
-	// so it is not overlooked when the config is changed.
-
-	env := map[string]string{
-		"CHEAT_CONF_EDITOR":           m.conf.Editor,
-		"CHEAT_CONF_FORMATTER":        m.conf.Formatter,
-		"CHEAT_CONF_STYLE":            m.conf.Style,
-		"CHEAT_CONF_CHEATPATHS_COUNT": fmt.Sprint(len(m.conf.Cheatpaths)),
-		"CHEAT_CONF_HOOKS_COUNT":      fmt.Sprint(len(m.conf.Hooks)),
-	}
-
-	for i, cp := range m.conf.Cheatpaths {
-		env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_PATH", i)] = cp.Path
-		env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_NAME", i)] = cp.Name
-		if cp.ReadOnly {
-			env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_READONLY", i)] = "true"
-		} else {
-			env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_READONLY", i)] = "false"
-		}
-		env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_PATH", i)] = strings.Join(cp.Tags, ",")
-	}
-
-	for i, h := range m.conf.Hooks {
-		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_PATH", i)] = h.Path
-		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_TYPES", i)] = strings.Join(h.Events, ",")
-	}
-
-	return env
+	return config.ConfigToEnvironment(m.conf)
 }

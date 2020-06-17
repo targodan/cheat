@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	cp "github.com/cheat/cheat/internal/cheatpath"
 
@@ -113,4 +114,32 @@ func New(opts map[string]interface{}, confPath string, resolve bool) (Config, er
 	}
 
 	return conf, nil
+}
+
+func ConfigToEnvironment(conf *Config) map[string]string {
+	env := map[string]string{
+		"CHEAT_CONF_EDITOR":           conf.Editor,
+		"CHEAT_CONF_FORMATTER":        conf.Formatter,
+		"CHEAT_CONF_STYLE":            conf.Style,
+		"CHEAT_CONF_CHEATPATHS_COUNT": fmt.Sprint(len(conf.Cheatpaths)),
+		"CHEAT_CONF_HOOKS_COUNT":      fmt.Sprint(len(conf.Hooks)),
+	}
+
+	for i, cp := range conf.Cheatpaths {
+		env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_PATH", i)] = cp.Path
+		env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_NAME", i)] = cp.Name
+		if cp.ReadOnly {
+			env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_READONLY", i)] = "true"
+		} else {
+			env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_READONLY", i)] = "false"
+		}
+		env[fmt.Sprintf("CHEAT_CONF_CHEATPATHS_%d_PATH", i)] = strings.Join(cp.Tags, ",")
+	}
+
+	for i, h := range conf.Hooks {
+		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_PATH", i)] = h.Path
+		env[fmt.Sprintf("CHEAT_CONF_HOOKS_%d_TYPES", i)] = strings.Join(h.Events, ",")
+	}
+
+	return env
 }
