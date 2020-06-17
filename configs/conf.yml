@@ -64,3 +64,30 @@ cheatpaths:
   # Such "directory-scoped" cheatsheets will be treated as the most "local"
   # cheatsheets, and will override less "local" cheatsheets. Likewise,
   # directory-scoped cheatsheets will always be editable ('readonly: false').
+
+# Optional hooks for certain events.
+#
+# Hooks can be any executable, such as scripts or applications.
+# OnStart and OnStop hooks are called in the following way:
+# <hookPath> <eventName>
+#
+# Other OnSheet* hooks are called like this:
+# <hookPath> <eventName> <pathOfSheet> <readOnly> <title> <title> <syntax> <tags>
+# The <readOnly> argument is either "true" or "false", the <tags> are separated by ',' with no spaces.
+#
+# Available event types are:
+# - OnStart
+# - OnStop
+# - OnSheetViewPre
+# - OnSheetViewPost
+# - OnSheetEditPre
+# - OnSheetEditPost
+# - OnSheetRemovePre
+# - OnSheetRemovePost
+hooks:
+  # - name: "Update all cheatpaths"
+  #   events: [ "OnStart" ]
+  #   path: "/some/path/to/commitAndPush.sh"
+  # - name: "Commit and push"
+  #   events: [ "OnSheetEditPost", "OnSheetRemovePost" ]
+  #   path: "/some/path/to/commitAndPush.sh"
