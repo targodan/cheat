@@ -12,20 +12,24 @@ const (
 	OnStart Type = iota
 	OnStop
 
-	OnSheetView
-	OnSheetEditOpen
-	OnSheetEditClose
-	OnSheetRemove
+	OnSheetViewPre
+	OnSheetViewPost
+	OnSheetEditPre
+	OnSheetEditPost
+	OnSheetRemovePre
+	OnSheetRemovePost
 )
 
 var TypeNames = map[Type]string{
 	OnStart: "OnStart",
 	OnStop:  "OnStop",
 
-	OnSheetView:      "OnSheetView",
-	OnSheetEditOpen:  "OnSheetEditOpen",
-	OnSheetEditClose: "OnSheetEditClose",
-	OnSheetRemove:    "OnSheetRemove",
+	OnSheetViewPre:    "OnSheetViewPre",
+	OnSheetViewPost:   "OnSheetViewPost",
+	OnSheetEditPre:    "OnSheetEditPre",
+	OnSheetEditPost:   "OnSheetEditPost",
+	OnSheetRemovePre:  "OnSheetRemovePre",
+	OnSheetRemovePost: "OnSheetRemovePost",
 }
 
 type Hook struct {

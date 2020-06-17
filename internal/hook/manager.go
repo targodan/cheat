@@ -37,20 +37,27 @@ func (m *Manager) RunOnStopHooks() error {
 	return m.runHooksOfType(OnStop)
 }
 
-func (m *Manager) RunOnSheetViewHooks(sheet sheet.Sheet) error {
-	return m.runHooksOfTypeWithSheet(OnSheetView, &sheet)
+func (m *Manager) RunOnSheetViewPreHooks(sheet sheet.Sheet) error {
+	return m.runHooksOfTypeWithSheet(OnSheetViewPre, &sheet)
 }
 
-func (m *Manager) RunOnSheetEditOpenHooks(sheet sheet.Sheet) error {
-	return m.runHooksOfTypeWithSheet(OnSheetView, &sheet)
+func (m *Manager) RunOnSheetViewPostHooks(sheet sheet.Sheet) error {
+	return m.runHooksOfTypeWithSheet(OnSheetViewPost, &sheet)
 }
 
-func (m *Manager) RunOnSheetEditCloseHooks(sheet sheet.Sheet) error {
-	return m.runHooksOfTypeWithSheet(OnSheetView, &sheet)
+func (m *Manager) RunOnSheetEditPreHooks(sheet sheet.Sheet) error {
+	return m.runHooksOfTypeWithSheet(OnSheetEditPre, &sheet)
 }
 
-func (m *Manager) RunOnSheetRemoveHooks(sheet sheet.Sheet) error {
-	return m.runHooksOfTypeWithSheet(OnSheetView, &sheet)
+func (m *Manager) RunOnSheetEditPostHooks(sheet sheet.Sheet) error {
+	return m.runHooksOfTypeWithSheet(OnSheetEditPost, &sheet)
+}
+
+func (m *Manager) RunOnSheetRemovePreHooks(sheet sheet.Sheet) error {
+	return m.runHooksOfTypeWithSheet(OnSheetViewPre, &sheet)
+}
+func (m *Manager) RunOnSheetRemovePostHooks(sheet sheet.Sheet) error {
+	return m.runHooksOfTypeWithSheet(OnSheetViewPost, &sheet)
 }
 
 func (m *Manager) createHooksFromConfig() error {
